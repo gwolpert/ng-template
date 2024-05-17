@@ -1,20 +1,26 @@
 import { createSpinner } from 'nanospinner';
-import { addSchematic } from '../utils/add-schematic';
 import { execScript } from '../utils/exec-script';
+import { cloneFile } from '../utils/file-system';
 
-export const addEslint = async (path: string) => {
+export const addEslint = async (appDir: string, assetsDir: string) => {
 	const spinner = createSpinner('Adding ESLint...').start();
 	try {
-		await addSchematic('@angular-eslint/schematics', path);
-
 		const devDependencies = [
+			'@angular-eslint/eslint-plugin',
+			'@angular-eslint/eslint-plugin-template',
+			'@eslint/js',
 			'eslint',
 			'eslint-config-prettier',
 			'eslint-plugin-prettier',
 			'eslint-plugin-simple-import-sort',
 			'prettier',
+			'typescript-eslint',
 		].join(' ');
-		await execScript(`pnpm install --save-dev ${devDependencies}`, path);
+		await execScript(`pnpm install --save-dev ${devDependencies}`, appDir);
+		await cloneFile(
+			`${assetsDir}/eslint.config.mjs`,
+			`${appDir}/eslint.config.mjs`
+		);
 	} catch (error) {
 		spinner.error({ text: 'Failed to add ESLint' });
 		console.error(error);

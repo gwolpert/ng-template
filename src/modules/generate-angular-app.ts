@@ -6,17 +6,18 @@ import {
 	cloneFile,
 	readFileContent,
 	removeDir,
-	replaceFileContent,
 	writeFileContent,
 } from '../utils/file-system';
 
 /**
  * Generate an Angular app using the Angular CLI
  * @param basicInformation The basic information for the Angular app
+ * @param assetsDir The directory containing the materialized assets for the Angular app
  * @returns The path to the generated Angular app
  */
 export const generateAngularApp = async (
-	basicInformation: BasicInformation
+	basicInformation: BasicInformation,
+	assetsDir: string
 ): Promise<string> => {
 	const { name, prefix, destinationFolder } = basicInformation;
 	const appFolder = `${destinationFolder}/${name}`;
@@ -47,7 +48,6 @@ export const generateAngularApp = async (
 		await updateTsConfigJson(`${appFolder}/tsconfig.json`);
 
 		// Copy additional files
-		const assetsDir = `${__dirname}/../assets`;
 		await removeDir(`${appFolder}/src`);
 		await cloneDir(`${assetsDir}/src`, `${appFolder}/src`);
 		await cloneFile(`${assetsDir}/karma.conf.js`, `${appFolder}/karma.conf.js`);
@@ -55,16 +55,6 @@ export const generateAngularApp = async (
 			`${assetsDir}/karma-dev.conf.js`,
 			`${appFolder}/karma-dev.conf.js`
 		);
-		await replaceFileContent({
-			files: [`${appFolder}/**/*.{html,ts}`],
-			from: /__appPrefix__/g,
-			to: prefix,
-		});
-		await replaceFileContent({
-			files: [`${appFolder}/**/*.{html,ts}`],
-			from: /__appName__/g,
-			to: name,
-		});
 	} catch (error) {
 		spinner.error({
 			text: 'Failed to generate Angular app using the Angular CLI',
@@ -124,6 +114,7 @@ const updateAngularJson = async (name: string, path: string) => {
 
 const updatePackageJson = async (name: string, path: string) => {
 	const packageJson = JSON.parse(await readFileContent(path));
+	packageJson.name = name;
 	packageJson.version = '0.0.1';
 	packageJson.scripts = {
 		'ng': 'node --max-old-space-size=8192 node_modules/@angular/cli/bin/ng',

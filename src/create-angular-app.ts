@@ -6,6 +6,7 @@ import { ensureAngularCliInstallation } from './modules/ensure-angular-cli-insta
 import { generateAngularApp } from './modules/generate-angular-app';
 import { addAngularLocalize } from './modules/add-angular-localize';
 import { addEslint } from './modules/add-eslint';
+import { materializeAssets } from './modules/materialize-assets';
 
 (async () => {
 	console.log(`\t${chalk.blueBright('Create Angular App')}`);
@@ -23,11 +24,12 @@ import { addEslint } from './modules/add-eslint';
 	await ensurePnpmInstallation();
 	// Make sure Angular CLI is installed
 	await ensureAngularCliInstallation();
+	// Materialize the asset files
+	const assetsDir = await materializeAssets(basicInformation);
 	// Generate the Angular app
-	const appDir = await generateAngularApp(basicInformation);
-
+	const appDir = await generateAngularApp(basicInformation, assetsDir);
 	// Add EsLint to the Angular app
-	await addEslint(appDir);
+	await addEslint(appDir, assetsDir);
 	// Add Angular Localize to the Angular app
 	await addAngularLocalize(appDir);
 })();
