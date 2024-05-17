@@ -1,9 +1,10 @@
 {
   "name": "angular-template",
-  "version": "1.0.0",
+  "version": "17.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "esbuild src/create-angular-app.ts --bundle --minify --platform=node --outfile=dist/main.js",
+    "ng": "node --max-old-space-size=8192 node_modules/@angular/cli/bin/ng",
+    "build": "esbuild src/create-angular-app.ts --bundle --minify --platform=node --sourcemap --outfile=dist/main.js",
     "start": "pnpm build && node dist/main.js",
     "lint": "eslint src --fix"
   },
@@ -11,6 +12,7 @@
   "license": "MIT",
   "description": "An interactive tool to create a new Angular App using the Angular CLI",
   "devDependencies": {
+    "@angular/cli": "^17",
     "@eslint/js": "^9.2.0",
     "@types/figlet": "^1.5.8",
     "@types/fs-extra": "^11.0.4",

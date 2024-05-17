@@ -12,15 +12,27 @@ export const ensurePnpmInstallation = async () => {
 		console.warn('PNPM is not installed. Attempting installation...');
 		spinner.update({ text: 'Installing PNPM...' });
 		try {
+			spinner.update({ text: 'Installing PNPM...' });
 			await execScript('npm install --location=global pnpm');
 			await execScript('pnpm setup');
 		} catch (error) {
 			// Something went wrong during installation
 			spinner.error({ text: 'Failed to install PNPM' });
 			console.error(error);
+			process.exit(1);
 		}
-
-		// PNPM has been installed
-		spinner.success({ text: 'PNPM has been installed' });
 	}
+
+	try {
+		spinner.update({ text: 'Installing dependencies...' });
+		await execScript('pnpm install');
+	} catch (error) {
+		// Something went wrong during installing dependencies
+		spinner.error({ text: 'Failed to install dependencies' });
+		console.error(error);
+		process.exit(1);
+	}
+
+	// PNPM has been installed
+	spinner.success({ text: 'PNPM has been installed' });
 };

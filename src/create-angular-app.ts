@@ -5,6 +5,7 @@ import { ensurePnpmInstallation } from './modules/ensure-pnpm-installation';
 import { ensureAngularCliInstallation } from './modules/ensure-angular-cli-installation';
 import { generateAngularApp } from './modules/generate-angular-app';
 import { addAngularLocalize } from './modules/add-angular-localize';
+import { addEslint } from './modules/add-eslint';
 
 (async () => {
 	console.log(`\t${chalk.blueBright('Create Angular App')}`);
@@ -24,6 +25,9 @@ import { addAngularLocalize } from './modules/add-angular-localize';
 	await ensureAngularCliInstallation();
 	// Generate the Angular app
 	const appDir = await generateAngularApp(basicInformation);
+
+	// Add EsLint to the Angular app
+	await addEslint(appDir);
 	// Add Angular Localize to the Angular app
 	await addAngularLocalize(appDir);
 })();

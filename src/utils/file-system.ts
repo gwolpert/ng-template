@@ -32,6 +32,11 @@ export const cloneDir = (src: string, dest: string): Promise<void> =>
 	);
 
 /**
+ * Removes a directory
+ * @param path Path to the directory to remove
+ */
+export const removeDir = (path: string): Promise<void> => removeFile(path);
+/**
  * Creates a directory
  * @param path Path to the directory to create
  */
