@@ -1,6 +1,8 @@
 import { copyFile, mkdir, writeFile, readFile } from 'fs';
-import { copy, remove } from 'fs-extra';
+import { remove } from 'fs-extra';
+import recursiveCopy from 'recursive-copy';
 import { replaceInFile, ReplaceInFileConfig } from 'replace-in-file';
+import { resolve as resolvePath } from 'path';
 
 /**
  * Clones a file from src to dest
@@ -9,7 +11,9 @@ import { replaceInFile, ReplaceInFileConfig } from 'replace-in-file';
  */
 export const cloneFile = (src: string, dest: string): Promise<void> =>
 	new Promise((resolve, reject) =>
-		copyFile(src, dest, (error) => (error ? reject(error) : resolve()))
+		copyFile(resolvePath(src), resolvePath(dest), (error) =>
+			error ? reject(error) : resolve()
+		)
 	);
 
 /**
@@ -18,7 +22,7 @@ export const cloneFile = (src: string, dest: string): Promise<void> =>
  */
 export const removeFile = (path: string): Promise<void> =>
 	new Promise((resolve, reject) =>
-		remove(path, (error) => (error ? reject(error) : resolve()))
+		remove(resolvePath(path), (error) => (error ? reject(error) : resolve()))
 	);
 
 /**
@@ -28,21 +32,28 @@ export const removeFile = (path: string): Promise<void> =>
  */
 export const cloneDir = (src: string, dest: string): Promise<void> =>
 	new Promise((resolve, reject) =>
-		copy(src, dest, (error) => (error ? reject(error) : resolve()))
+		recursiveCopy(resolvePath(src), resolvePath(dest), { overwrite: true })
+			.then(() => {
+				resolve();
+			})
+			.catch((error: Error) => {
+				reject(error);
+			})
 	);
 
 /**
  * Removes a directory
  * @param path Path to the directory to remove
  */
-export const removeDir = (path: string): Promise<void> => removeFile(path);
+export const removeDir = (path: string): Promise<void> =>
+	removeFile(resolvePath(path));
 /**
  * Creates a directory
  * @param path Path to the directory to create
  */
 export const createDir = (path: string): Promise<void> =>
 	new Promise((resolve, reject) =>
-		mkdir(path, { recursive: true }, (error) =>
+		mkdir(resolvePath(path), { recursive: true }, (error) =>
 			error ? reject(error) : resolve()
 		)
 	);
@@ -53,7 +64,7 @@ export const createDir = (path: string): Promise<void> =>
  */
 export const readFileContent = (path: string): Promise<string> =>
 	new Promise((resolve, reject) =>
-		readFile(path, { encoding: 'utf-8' }, (error, data) =>
+		readFile(resolvePath(path), { encoding: 'utf-8' }, (error, data) =>
 			error ? reject(error) : resolve(data)
 		)
 	);
@@ -68,7 +79,7 @@ export const writeFileContent = (
 	content: string
 ): Promise<void> =>
 	new Promise((resolve, reject) =>
-		writeFile(path, content, { encoding: 'utf-8' }, (error) =>
+		writeFile(resolvePath(path), content, { encoding: 'utf-8' }, (error) =>
 			error ? reject(error) : resolve()
 		)
 	);
@@ -80,5 +91,10 @@ export const writeFileContent = (
 export const replaceFileContent = async (
 	replacements: ReplaceInFileConfig
 ): Promise<void> => {
+	// if (Array.isArray(replacements.files)) {
+	// 	replacements.files = replacements.files.map((file) => resolvePath(file));
+	// } else {
+	// 	replacements.files = resolvePath(replacements.files);
+	// }
 	await replaceInFile(replacements);
 };

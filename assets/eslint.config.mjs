@@ -27,11 +27,11 @@ const tsRules = {
     ],
     "@angular-eslint/directive-selector": [
       "error",
-      { type: "attribute", prefix: "__appPrefix__", style: "camelCase" }
+      { type: "attribute", prefix: "asd", style: "camelCase" }
     ],
     "@angular-eslint/component-selector": [
       "error",
-      { type: "element", prefix: "__appPrefix__", style: "kebab-case" }
+      { type: "element", prefix: "asd", style: "kebab-case" }
     ],
     "@angular-eslint/prefer-on-push-component-change-detection": "error",
     "@typescript-eslint/no-unused-vars": "error",

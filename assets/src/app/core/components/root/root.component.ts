@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-	selector: '__appPrefix__-root',
+	selector: 'asd-root',
 	standalone: true,
 	imports: [RouterOutlet],
 	templateUrl: './root.component.html',

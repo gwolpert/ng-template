@@ -9,17 +9,17 @@ export const materializeAssets = async (
 	const assetsDir = `${__dirname}/assets`;
 	try {
 		await cloneDir(`${__dirname}/../assets`, assetsDir);
-		const files = [`${assetsDir}/**/*.{html,ts,mjs}`];
+		const files = ['assets/**/*.ts', 'assets/**/*.html', 'assets/**/*.mjs'];
 		await replaceFileContent({
 			files,
 			from: /__appPrefix__/g,
 			to: basicInformation.prefix,
 		});
-		// await replaceFileContent({
-		// 	files,
-		// 	from: /__appName__/g,
-		// 	to: basicInformation.name,
-		// });
+		await replaceFileContent({
+			files,
+			from: /__appName__/g,
+			to: basicInformation.name,
+		});
 	} catch (error) {
 		spinner.error({ text: 'Failed to materialize assets' });
 		console.error(error);

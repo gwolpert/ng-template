@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-	selector: '__appPrefix__-not-found',
+	selector: 'asd-not-found',
 	standalone: true,
 	imports: [],
 	templateUrl: './not-found.component.html',

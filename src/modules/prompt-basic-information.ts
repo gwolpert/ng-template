@@ -1,6 +1,7 @@
 // @ts-expect-error - Ignore missing types for inquirer
 import inquirer, { QuestionCollection } from 'inquirer';
 import { BasicInformation } from '../interfaces/basic-information';
+import { resolve } from 'path';
 
 export const promptBasicInformation = async (): Promise<BasicInformation> => {
 	const questions: QuestionCollection<BasicInformation> = [
@@ -24,9 +25,14 @@ export const promptBasicInformation = async (): Promise<BasicInformation> => {
 			type: 'input',
 			name: 'destinationFolder',
 			message: 'Destination folder:',
-			default: process.cwd() + '/dist',
+			default: resolve(process.cwd() + '/dist'),
 		},
 	];
 
-	return inquirer.prompt<BasicInformation>(questions);
+	const basicInformation = await inquirer.prompt<BasicInformation>(questions);
+	basicInformation.destinationFolder = resolve(
+		basicInformation.destinationFolder
+	);
+
+	return basicInformation;
 };

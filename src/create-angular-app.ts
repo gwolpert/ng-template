@@ -10,7 +10,7 @@ import { materializeAssets } from './modules/materialize-assets';
 
 (async () => {
 	console.log(`\t${chalk.blueBright('Create Angular App')}`);
-	console.log(`\t${chalk.grey('version: 2.0.0 (2024-05-16')}`);
+	console.log(`\t${chalk.grey('version: 2.0.0 (2024-05-16)')}`);
 	console.log(`\t${chalk.grey('author: Gio Wolpert')}`);
 	console.log(`
 	Welcome to the Create Angular App CLI!
