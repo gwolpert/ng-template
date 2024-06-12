@@ -1,16 +1,50 @@
 import { addSchematic } from '../utils/add-schematic';
-import { createSpinner } from 'nanospinner';
+import { readFileContent, writeFileContent } from '../utils/file-system';
+import { execScript } from '../utils/exec-script';
+import { composeModuleFactory } from '../utils/compose-module-factory';
 
-export const addAngularLocalize = async (path: string) => {
-	const spinner = createSpinner('Configuring Angular Localize...').start();
-	try {
-		await addSchematic('@angular/localize', path);
-	} catch (error) {
-		spinner.error({ text: 'Failed to configure Angular Localize' });
-		console.error(error);
-		process.exit(1);
+export const addAngularLocalize = composeModuleFactory(
+	'Angular Localize',
+	async ({ appDir }) => {
+		await addSchematic('@angular/localize', appDir);
+
+		// Update Angular configuration
+		const angularJsonPath = `${appDir}/angular.json`;
+		const angularJson = JSON.parse(await readFileContent(angularJsonPath));
+		const firstProject = Object.keys(angularJson.projects).at(0);
+		if (firstProject) {
+			const project = angularJson['projects'][firstProject];
+			project['i18n'] = {
+				sourceLocale: 'en',
+				locales: {},
+			};
+			project['architect']['build']['configurations']['en'] = {
+				localize: ['en'],
+				i18nMissingTranslation: 'error',
+			};
+			project['architect']['build']['defaultConfiguration'] = 'production,en';
+			project['architect']['extract-i18n']['options'] = {
+				buildTarget: `${firstProject}:build`,
+				outputPath: 'src/locales',
+				outFile: 'translations.xlf',
+			};
+			project['architect']['build']['options']['localize'] = ['en'];
+			await writeFileContent(
+				angularJsonPath,
+				JSON.stringify(angularJson, null, 2)
+			);
+		}
+
+		// Update package.json scripts
+		const packageJsonPath = `${appDir}/package.json`;
+		const packageJson = JSON.parse(await readFileContent(packageJsonPath));
+		packageJson.scripts['i18n'] = 'pnpm ng extract-i18n';
+		await writeFileContent(
+			packageJsonPath,
+			JSON.stringify(packageJson, null, 2)
+		);
+
+		// Extract translations
+		await execScript('pnpm i18n', appDir);
 	}
-
-	// Angular Localize has been configured successfully
-	spinner.success({ text: 'Angular Localize has been configured' });
-};
+);

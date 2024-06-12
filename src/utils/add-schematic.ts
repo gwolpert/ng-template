@@ -6,6 +6,6 @@ export const addSchematic = async (
 	options = ''
 ): Promise<string> =>
 	await execScript(
-		`ng add --skip-confirmation ${name}@latest ${options}`,
+		`ng add ${name}@latest --skip-confirmation ${options}`.trim(),
 		path
 	);

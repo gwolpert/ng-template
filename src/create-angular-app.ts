@@ -1,12 +1,23 @@
 // @ts-expect-error - Ignore missing types for chalk
 import chalk from 'chalk';
-import { promptBasicInformation } from './modules/prompt-basic-information';
-import { ensurePnpmInstallation } from './modules/ensure-pnpm-installation';
-import { ensureAngularCliInstallation } from './modules/ensure-angular-cli-installation';
-import { generateAngularApp } from './modules/generate-angular-app';
-import { addAngularLocalize } from './modules/add-angular-localize';
-import { addEslint } from './modules/add-eslint';
-import { materializeAssets } from './modules/materialize-assets';
+
+import {
+	addAngularLocalize,
+	addAngularMaterial,
+	addApplicationInsights,
+	addEslint,
+	addFontAwesome,
+	addMsalAuth,
+	addReduxState,
+	addTailwindCss,
+	cleanupInstallation,
+	ensureAngularCliInstallation,
+	ensurePnpmInstallation,
+	generateAngularApp,
+	materializeAssets,
+	promptBasicInformation,
+} from './modules';
+import { InstallationContext, PromptedInformation } from './interfaces';
 
 (async () => {
 	console.log(`\t${chalk.blueBright('Create Angular App')}`);
@@ -19,17 +30,38 @@ import { materializeAssets } from './modules/materialize-assets';
 `);
 
 	// Prompt the user for basic information
-	const basicInformation = await promptBasicInformation();
+	const promptedInformation: PromptedInformation =
+		await promptBasicInformation();
 	// Make sure pnpm is installed as the package manager
 	await ensurePnpmInstallation();
 	// Make sure Angular CLI is installed
 	await ensureAngularCliInstallation();
 	// Materialize the asset files
-	const assetsDir = await materializeAssets(basicInformation);
+	const assetsDir = await materializeAssets(promptedInformation);
 	// Generate the Angular app
-	const appDir = await generateAngularApp(basicInformation, assetsDir);
+	const appDir = await generateAngularApp(promptedInformation, assetsDir);
+	// Create the installation context
+	const context: InstallationContext = {
+		appDir,
+		assetsDir,
+		promptedInformation,
+	};
 	// Add EsLint to the Angular app
-	await addEslint(appDir, assetsDir);
+	await addEslint(context);
+	// Add Tailwind CSS to the Angular app
+	if (promptedInformation.addTailwindCSS) await addTailwindCss(context);
+	// Add Angular Material to the Angular app
+	if (promptedInformation.addAngularMaterial) await addAngularMaterial(context);
+	// Add Font Awesome to the Angular app
+	if (promptedInformation.addFontAwesome) await addFontAwesome(context);
+	// Add MSAL to the Angular app
+	if (promptedInformation.addMsal) await addMsalAuth(context);
+	// Add Redux to the Angular app
+	if (promptedInformation.addRedux) await addReduxState(context);
+	// Add Logger to the Angular app
+	await addApplicationInsights(context);
 	// Add Angular Localize to the Angular app
-	await addAngularLocalize(appDir);
+	await addAngularLocalize(context);
+	// Clean up the assets directory
+	await cleanupInstallation(assetsDir);
 })();

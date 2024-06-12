@@ -1,7 +1,11 @@
 import { copyFile, mkdir, writeFile, readFile } from 'fs';
 import { remove } from 'fs-extra';
 import recursiveCopy from 'recursive-copy';
-import { replaceInFile, ReplaceInFileConfig } from 'replace-in-file';
+import {
+	ReplaceInFileConfig,
+	replaceInFileSync,
+	ReplaceResult,
+} from 'replace-in-file';
 import { resolve as resolvePath } from 'path';
 
 /**
@@ -88,13 +92,6 @@ export const writeFileContent = (
  * Replaces content in a file
  * @param replacements Replacements to make in the file
  */
-export const replaceFileContent = async (
+export const replaceFileContent = (
 	replacements: ReplaceInFileConfig
-): Promise<void> => {
-	// if (Array.isArray(replacements.files)) {
-	// 	replacements.files = replacements.files.map((file) => resolvePath(file));
-	// } else {
-	// 	replacements.files = resolvePath(replacements.files);
-	// }
-	await replaceInFile(replacements);
-};
+): ReplaceResult[] => replaceInFileSync(replacements);

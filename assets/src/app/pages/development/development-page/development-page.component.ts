@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-	selector: 'asd-development-page',
+	selector: '__appPrefix__-development-page',
 	standalone: true,
 	imports: [],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './development-page.component.html',
 })
 export class DevelopmentPageComponent {}

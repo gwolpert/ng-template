@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-	selector: 'asd-home-page',
+	selector: '__appPrefix__-home-page',
 	standalone: true,
 	imports: [],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './home-page.component.html',
 })
 export class HomePageComponent {}

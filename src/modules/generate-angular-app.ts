@@ -1,4 +1,4 @@
-import { BasicInformation } from '../interfaces/basic-information';
+import { PromptedInformation } from '../interfaces/prompted-information';
 import { createSpinner } from 'nanospinner';
 import { execScript } from '../utils/exec-script';
 import {
@@ -16,7 +16,7 @@ import {
  * @returns The path to the generated Angular app
  */
 export const generateAngularApp = async (
-	basicInformation: BasicInformation,
+	basicInformation: PromptedInformation,
 	assetsDir: string
 ): Promise<string> => {
 	const { name, prefix, destinationFolder } = basicInformation;
@@ -36,7 +36,7 @@ export const generateAngularApp = async (
 		await execScript(`pnpm install --save-dev ${devDependencies}`, appFolder);
 
 		const dependencies = [
-			'@microsoft/applicationinsights-web',
+			// '@microsoft/applicationinsights-web',
 			'luxon',
 			'ngxtension',
 		].join(' ');
@@ -122,10 +122,6 @@ const updatePackageJson = async (name: string, path: string) => {
 		'start': 'pnpm ng serve',
 		'test': 'pnpm ng test',
 		'test:dev': 'pnpm ng test --configuration development',
-		// 'start:nl': 'pnpm ng serve --configuration nl',
-		// 'lint': 'pnpm ng lint',
-		// 'i18n': 'pnpm ng extract-i18n',
-		// 'precommit': 'pnpm lint',
 	};
 	await writeFileContent(path, JSON.stringify(packageJson, null, 2));
 };

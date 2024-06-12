@@ -1,4 +1,5 @@
 import { exec } from 'child_process';
+import { resolve as resolvePath } from 'path';
 
 /**
  * Execute a script in the shell
@@ -7,7 +8,7 @@ import { exec } from 'child_process';
  */
 export const execScript = async (command: string, path = process.cwd()) => {
 	return new Promise<string>((resolve, reject) => {
-		exec(command, { cwd: path }, (error, stdout) => {
+		exec(command, { cwd: resolvePath(path) }, (error, stdout) => {
 			if (error) {
 				reject(error);
 				return;

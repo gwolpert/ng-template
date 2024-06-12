@@ -34,5 +34,5 @@ export const ensurePnpmInstallation = async () => {
 	}
 
 	// PNPM has been installed
-	spinner.success({ text: 'PNPM has been installed' });
+	spinner.success({ text: 'Dependencies have been installed' });
 };

@@ -1,32 +1,54 @@
-import { createSpinner } from 'nanospinner';
 import { execScript } from '../utils/exec-script';
-import { cloneFile } from '../utils/file-system';
+import {
+	cloneFile,
+	readFileContent,
+	writeFileContent,
+} from '../utils/file-system';
+import { addSchematic } from '../utils/add-schematic';
+import { composeModuleFactory } from '../utils/compose-module-factory';
 
-export const addEslint = async (appDir: string, assetsDir: string) => {
-	const spinner = createSpinner('Adding ESLint...').start();
-	try {
+export const addEslint = composeModuleFactory(
+	'ESLint',
+	async ({ appDir, assetsDir }) => {
+		await addSchematic('@angular-eslint/schematics', appDir);
 		const devDependencies = [
-			'@angular-eslint/eslint-plugin',
-			'@angular-eslint/eslint-plugin-template',
+			'globals',
 			'@eslint/js',
-			'eslint',
-			'eslint-config-prettier',
 			'eslint-plugin-prettier',
+			'eslint-config-prettier',
 			'eslint-plugin-simple-import-sort',
-			'prettier',
-			'typescript-eslint',
 		].join(' ');
 		await execScript(`pnpm install --save-dev ${devDependencies}`, appDir);
 		await cloneFile(
-			`${assetsDir}/eslint.config.mjs`,
-			`${appDir}/eslint.config.mjs`
+			`${assetsDir}/eslint.config.js`,
+			`${appDir}/eslint.config.js`
 		);
-	} catch (error) {
-		spinner.error({ text: 'Failed to add ESLint' });
-		console.error(error);
-		process.exit(1);
-	}
 
-	// ESLint has been added successfully
-	spinner.success({ text: 'ESLint has been added' });
-};
+		// Update Angular configuration
+		const angularJsonPath = `${appDir}/angular.json`;
+		const angularJson = JSON.parse(await readFileContent(angularJsonPath));
+		const firstProject = Object.keys(angularJson.projects).at(0);
+		if (firstProject) {
+			angularJson['projects'][firstProject]['architect']['lint']['options'] = {
+				eslintConfig: 'eslint.config.js',
+				lintFilePatterns: ['src/**/*.ts', 'src/**/*.html'],
+				maxWarnings: 10,
+				fix: true,
+			};
+			await writeFileContent(
+				angularJsonPath,
+				JSON.stringify(angularJson, null, 2)
+			);
+		}
+
+		// Update package.json scripts
+		const packageJsonPath = `${appDir}/package.json`;
+		const packageJson = JSON.parse(await readFileContent(packageJsonPath));
+		packageJson.scripts.lint = 'pnpm ng lint';
+		await writeFileContent(
+			packageJsonPath,
+			JSON.stringify(packageJson, null, 2)
+		);
+		await execScript('pnpm lint', appDir);
+	}
+);
