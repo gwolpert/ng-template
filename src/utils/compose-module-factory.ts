@@ -3,7 +3,7 @@ import { createSpinner } from 'nanospinner';
 
 export function composeModuleFactory(
 	moduleName: string,
-	// eslint-disable-next-line no-unused-vars
+
 	callback: (moduleInformation: InstallationContext) => Promise<void>
 ) {
 	return async (moduleInformation: InstallationContext): Promise<void> => {

@@ -1,11 +1,26 @@
 import globals from "globals";
-import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
-import prettierPlugin from "eslint-plugin-prettier";
+import prettier from "eslint-plugin-prettier";
 import prettierConfig from "eslint-config-prettier";
+import eslint from "@eslint/js";
+import simpleImportSort from "eslint-plugin-simple-import-sort";
 
-const tsRules = {
-  files: ["**/*.ts"],
+export default tseslint.config({
+  files: ["src/**/*.ts"],
+  languageOptions: {
+    parser: tseslint.parser,
+    globals: globals.browser
+  },
+  plugins: {
+    prettier,
+    ['simple-import-sort']: simpleImportSort,
+  },
+  extends: [
+    eslint.configs.recommended,
+    ...tseslint.configs.recommended,
+    ...tseslint.configs.stylistic,
+    prettierConfig
+  ],
   rules: {
     "no-undef": "off",
     "prettier/prettier": [
@@ -24,23 +39,4 @@ const tsRules = {
       }
     ]
   }
-}
-
-const config = [
-  {
-    plugins: {
-      ['typescript-eslint']: tseslint.plugin,
-      prettier: prettierPlugin
-    },
-    languageOptions: {
-      parser: tseslint.parser,
-      globals: globals.browser
-    },
-  },
-  ...tseslint.configs.recommended,
-  pluginJs.configs.recommended,
-  prettierConfig,
-  tsRules,
-];
-
-export default config;
+});

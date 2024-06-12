@@ -16,7 +16,7 @@ export const promptBasicInformation =
 				{} as Record<string, string>
 			);
 
-		const questions: Array<DistinctQuestion<PromptedInformation>> = [];
+		const questions: DistinctQuestion<PromptedInformation>[] = [];
 
 		if (!args.name) {
 			questions.push({
