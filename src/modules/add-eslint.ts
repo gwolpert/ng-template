@@ -6,6 +6,7 @@ import {
 } from '../utils/file-system';
 import { addSchematic } from '../utils/add-schematic';
 import { composeModuleFactory } from '../utils/compose-module-factory';
+import { installDependencies } from '../utils/install-dependencies';
 
 export const addEslint = composeModuleFactory(
 	'ESLint',
@@ -17,8 +18,8 @@ export const addEslint = composeModuleFactory(
 			'eslint-plugin-prettier',
 			'eslint-config-prettier',
 			'eslint-plugin-simple-import-sort',
-		].join(' ');
-		await execScript(`pnpm install --save-dev ${devDependencies}`, appDir);
+		];
+		await installDependencies(appDir, { devDependencies });
 		await cloneFile(
 			`${assetsDir}/eslint.config.js`,
 			`${appDir}/eslint.config.js`

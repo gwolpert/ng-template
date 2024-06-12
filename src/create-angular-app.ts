@@ -18,10 +18,10 @@ import {
 import { InstallationContext, PromptedInformation } from './interfaces';
 
 (async () => {
-	const chalk = new Chalk({ level: 1 });
-	console.log(`\t${chalk.blueBright('Create Angular App')}`);
-	console.log(`\t${chalk.grey('version: 2.0.0 (2024-05-16)')}`);
-	console.log(`\t${chalk.grey('author: Gio Wolpert')}`);
+	const { blueBright, blackBright } = new Chalk({ level: 1 });
+	console.log(`\t${blueBright('Create Angular App')}`);
+	console.log(`\t${blackBright('version: 2.0.0 (2024-05-16)')}`);
+	console.log(`\t${blackBright('author: Gio Wolpert')}`);
 	console.log(`
 	Welcome to the Create Angular App CLI!
 	This CLI-tool will help you to create a new Angular app up and running in no time.

@@ -1,4 +1,4 @@
-import { PromptedInformation } from '../interfaces/prompted-information';
+import { PromptedInformation } from '../interfaces';
 import { createSpinner } from 'nanospinner';
 import { execScript } from '../utils/exec-script';
 import {
@@ -8,6 +8,7 @@ import {
 	removeDir,
 	writeFileContent,
 } from '../utils/file-system';
+import { installDependencies } from '../utils/install-dependencies';
 
 /**
  * Generate an Angular app using the Angular CLI
@@ -32,15 +33,9 @@ export const generateAngularApp = async (
 		);
 
 		// Install additional dependencies
-		const devDependencies = ['@types/luxon', 'karma-junit-reporter'].join(' ');
-		await execScript(`pnpm install --save-dev ${devDependencies}`, appFolder);
-
-		const dependencies = [
-			// '@microsoft/applicationinsights-web',
-			'luxon',
-			'ngxtension',
-		].join(' ');
-		await execScript(`pnpm install --save ${dependencies}`, appFolder);
+		const dependencies = ['luxon', 'ngxtension'];
+		const devDependencies = ['@types/luxon', 'karma-junit-reporter'];
+		await installDependencies(appFolder, { dependencies, devDependencies });
 
 		// Update Angular app configuration
 		await updateAngularJson(name, `${appFolder}/angular.json`);
