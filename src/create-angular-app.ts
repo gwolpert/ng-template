@@ -1,6 +1,4 @@
-// @ts-expect-error - Ignore missing types for chalk
-import chalk from 'chalk';
-
+import { Chalk } from 'chalk';
 import {
 	addAngularLocalize,
 	addAngularMaterial,
@@ -20,6 +18,7 @@ import {
 import { InstallationContext, PromptedInformation } from './interfaces';
 
 (async () => {
+	const chalk = new Chalk({ level: 1 });
 	console.log(`\t${chalk.blueBright('Create Angular App')}`);
 	console.log(`\t${chalk.grey('version: 2.0.0 (2024-05-16)')}`);
 	console.log(`\t${chalk.grey('author: Gio Wolpert')}`);

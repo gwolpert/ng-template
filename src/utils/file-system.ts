@@ -49,8 +49,8 @@ export const cloneDir = (src: string, dest: string): Promise<void> =>
  * Removes a directory
  * @param path Path to the directory to remove
  */
-export const removeDir = (path: string): Promise<void> =>
-	removeFile(resolvePath(path));
+export const removeDir = async (path: string): Promise<void> =>
+	await removeFile(resolvePath(path));
 /**
  * Creates a directory
  * @param path Path to the directory to create
