@@ -2,7 +2,6 @@ import { composeModuleFactory } from '../utils/compose-module-factory';
 import {
 	cloneFile,
 	readFileContent,
-	removeFile,
 	writeFileContent,
 } from '../utils/file-system';
 import { installDependencies } from '../utils/install-dependencies';
@@ -16,7 +15,6 @@ export const addTailwindCss = composeModuleFactory(
 			`${assetsDir}/tailwind/tailwind.scss`,
 			`${appDir}/src/assets/scss/tailwind.scss`
 		);
-		await removeFile(`${appDir}/tailwind.config.js`);
 		await cloneFile(
 			`${assetsDir}/tailwind/tailwind.config.js`,
 			`${appDir}/tailwind.config.js`

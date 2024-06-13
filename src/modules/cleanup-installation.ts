@@ -11,4 +11,6 @@ export async function cleanupInstallation(assetsDir: string): Promise<void> {
 		console.error(error);
 		process.exit(1);
 	}
+
+	spinner.success({ text: 'Installation has been cleaned up' });
 }

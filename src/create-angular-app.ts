@@ -63,4 +63,6 @@ import { InstallationContext, PromptedInformation } from './interfaces';
 	await addAngularLocalize(context);
 	// Clean up the assets directory
 	await cleanupInstallation(assetsDir);
+	// Done
+	process.exit();
 })();

@@ -45,10 +45,9 @@ export const generateAngularApp = async (
 		// Copy additional files
 		await removeDir(`${appFolder}/src`);
 		await cloneDir(`${assetsDir}/src`, `${appFolder}/src`);
-		await cloneFile(`${assetsDir}/karma.conf.js`, `${appFolder}/karma.conf.js`);
 		await cloneFile(
-			`${assetsDir}/karma-dev.conf.js`,
-			`${appFolder}/karma-dev.conf.js`
+			`${assetsDir}/karma.config.js`,
+			`${appFolder}/karma.config.js`
 		);
 	} catch (error) {
 		spinner.error({
@@ -96,10 +95,11 @@ const updateAngularJson = async (name: string, path: string) => {
 				'accelerometer=(), autoplay=(), camera=(), cross-origin-isolated=(), display-capture=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), xr-spatial-tracking=()',
 		},
 	};
+	project['test']['options']['karmaConfig'] = 'karma.config.js';
 	project['test']['options']['codeCoverage'] = true;
 	project['test']['configurations'] = {
 		development: {
-			karmaConfig: 'karma-dev.conf.js',
+			watch: true,
 			codeCoverage: false,
 		},
 	};
@@ -113,7 +113,7 @@ const updatePackageJson = async (name: string, path: string) => {
 	packageJson.version = '0.0.1';
 	packageJson.scripts = {
 		'ng': 'node --max-old-space-size=8192 node_modules/@angular/cli/bin/ng',
-		'build': 'pnpm ng build --localize',
+		'build': 'pnpm ng build',
 		'start': 'pnpm ng serve',
 		'test': 'pnpm ng test',
 		'test:dev': 'pnpm ng test --configuration development',
